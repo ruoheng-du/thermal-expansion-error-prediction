@@ -1,1 +1,1 @@
-# thermal-expansion-error-prediction
+# Thermal Expansion Error Prediction | Summer 2023
