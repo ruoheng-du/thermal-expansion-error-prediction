@@ -46,11 +46,11 @@ def train_test(scaled_train, scaled_test):
 def fit_network(train_X, train_y, test_X, test_y, scaler):
     ## def network
     model = Sequential()
-    model.add(LSTM(128, activation='relu', input_shape=(train_X.shape[1], train_X.shape[2])))
+    model.add(LSTM(64, activation='relu', input_shape=(train_X.shape[1], train_X.shape[2])))
     model.add(Dense(1))
     model.compile(loss='mae', optimizer='adam')
     ## fit network
-    history = model.fit(train_X, train_y, epochs=1500, batch_size=32, validation_data=(test_X, test_y), verbose=2,
+    history = model.fit(train_X, train_y, epochs=5000, batch_size=512, validation_data=(test_X, test_y), verbose=2,
                         shuffle=False)
     ## plot history
     pyplot.plot(history.history['loss'], label='train')
@@ -66,6 +66,15 @@ def fit_network(train_X, train_y, test_X, test_y, scaler):
     inv_train_y = scaler.inverse_transform(np.reshape(train_original_copies_array, (len(train_y), 18)))[:, 0]
     train_rmse = sqrt(mean_squared_error(inv_train_yhat, inv_train_y))
     print('Train RMSE: %.3f' % train_rmse)
+
+    ## plot and check
+    pyplot.plot(inv_train_y, color='red', label='Real')
+    pyplot.plot(inv_train_yhat, color='green', label='Model')
+    pyplot.title('Train Dataset: Thermal Expansion Error Prediction')
+    pyplot.xlabel('Time')
+    pyplot.ylabel('delta L')
+    pyplot.legend()
+    pyplot.show()
 
     ## make a prediction and calculate Test RMSE
     yhat = model.predict(test_X)
